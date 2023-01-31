@@ -5,14 +5,15 @@ import (
 	"fmt"
 )
 
+// Queue by using circular array as the underlying data store
 type ArrayQueue struct {
-	front 	int // the frond index
-	count 	int // this simplifies the calculation comparing to keeping the end index
+	front 	int // the front index
+	count 	int
 	items 	[] interface{}
 }
 
 func NewArrayQueue() *ArrayQueue {
-	q := ArrayQueue{0, 0, make([]interface{}, 0, 3)}
+	q := ArrayQueue{0, 0, make([]interface{}, 4)}
 	return &q
 }
 
@@ -33,33 +34,10 @@ func (q *ArrayQueue) Clear() {
 }
 
 func (q *ArrayQueue) Enqueue(e interface{}) {
-	capacity := cap(q.items)
-
-	//when the queue is full, doubling the capacity of the underlying slice
-	if q.count == capacity {
-		// a new empty slice with capacity doubled
-		newItems := make([]interface{}, 0, cap(q.items) *2) 
-
-		// copy over the data from the current q.items : [q.front:len(q.items)), [0:q.front)
-		newItems = append(newItems, q.items[q.front:len(q.items)]...)
-		newItems = append(newItems, q.items[0:q.front]...)
-
-		q.items = newItems //[:] // value copy
-		q.front = 0
-		capacity = cap(q.items)
+	if q.count == len(q.items) {
+		q.items = append(q.items, q.items...)
 	}
-
-	// using a circular array to store items
-	if (q.front + q.count >= capacity) {
-		q.items[(q.front + q.count) % capacity] = e // the slot is allocated already
-	} else {
-		q.items = append(q.items, e) 
-	}
-
-	// if q.count == len(q.items) {
-	// 	q.items = append(q.items, q.items...)
-	// }
-	// q.items[(q.front + q.count ) % len(q.items)] = e
+	q.items[(q.front + q.count ) % len(q.items)] = e
 
 	q.count++
 }
@@ -71,7 +49,7 @@ func (q *ArrayQueue) Dequeue() (interface{}, error) {
 
 	result := q.items[q.front]
 	q.count--
-	q.front = (q.front + 1) % cap(q.items)
+	q.front++
 	return result, nil
 }
 

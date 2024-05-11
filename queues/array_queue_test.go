@@ -5,7 +5,7 @@ import(
 )
 
 func TestNewArrayQueue(t *testing.T) {
-	q := NewArrayQueue();
+	q := NewArrayQueue[int]();
 
 	if q.count != 0 || q.front != 0 || len(q.items) != 0 {
 		t.Fatalf("count: %v front: %v len: %v Q:%#v \n", q.count, q.front, len(q.items), q.items)
@@ -13,7 +13,7 @@ func TestNewArrayQueue(t *testing.T) {
 }
 
 func TestEnqueue(t *testing.T) {
-	q := NewArrayQueue();
+	q := NewArrayQueue[int]();
 	q.Enqueue(5)
 	q.Enqueue(4)
 	q.Dequeue()
@@ -30,7 +30,7 @@ func TestEnqueue(t *testing.T) {
 }
 
 func TestEnqueue2(t *testing.T) {
-	q := NewArrayQueue();
+	q := NewArrayQueue[int]();
 	q.Enqueue(5)
 	q.Enqueue(4)
 	q.Dequeue()
@@ -51,7 +51,7 @@ func TestEnqueue2(t *testing.T) {
 }
 
 func TestEnqueue3(t *testing.T) {
-	q := NewArrayQueue();
+	q := NewArrayQueue[int]();
 	q.Enqueue(5)
 	q.Enqueue(4)
 	q.Dequeue()
@@ -76,7 +76,9 @@ func TestEnqueue3(t *testing.T) {
 }
 
 func TestEnqueue4(t *testing.T) {
-	q := NewArrayQueue();
+	q := NewArrayQueue[int]();
+	//q := ArrayQueue{}
+
 	q.Enqueue(5)
 	q.Enqueue(4)
 	q.Enqueue(3)

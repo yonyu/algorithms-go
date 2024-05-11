@@ -6,34 +6,34 @@ import (
 )
 
 // Queue by using circular array as the underlying data store
-type ArrayQueue struct {
+type ArrayQueue[T any] struct {
 	front 	int // the front index
 	count 	int
-	items 	[] interface{}
+	items 	[]T
 }
 
-func NewArrayQueue() *ArrayQueue {
-	q := ArrayQueue{0, 0, make([]interface{}, 4)}
+func NewArrayQueue[T any]() *ArrayQueue[T] {
+	q := ArrayQueue[T]{0, 0, make([]T, 4)}
 	return &q
 }
 
-func (q ArrayQueue) Size() int {
+func (q ArrayQueue[T]) Size() int {
 	return q.count
 }
 
-func (q ArrayQueue) Empty() bool {
+func (q ArrayQueue[T]) Empty() bool {
 	return q.count == 0
 }
 
-func (q *ArrayQueue) Clear() {
+func (q *ArrayQueue[T]) Clear() {
 	if q.count > 0 {
-		q.items = make([]interface{}, 0)
+		q.items = make([]T, 0)
 	}
 	q.count = 0
 	q.front = 0
 }
 
-func (q *ArrayQueue) Enqueue(e interface{}) {
+func (q *ArrayQueue[T]) Enqueue(e T) {
 	if q.count == len(q.items) {
 		q.items = append(q.items, q.items...)
 	}
@@ -42,9 +42,10 @@ func (q *ArrayQueue) Enqueue(e interface{}) {
 	q.count++
 }
 
-func (q *ArrayQueue) Dequeue() (interface{}, error) {
+func (q *ArrayQueue[T]) Dequeue() (T, error) {
 	if (q.count == 0) {
-		return nil, errors.New("Dequeue: the queue cannot be empty")
+		var result T
+		return result, errors.New("Dequeue: the queue cannot be empty")
 	}
 
 	result := q.items[q.front]
@@ -53,14 +54,15 @@ func (q *ArrayQueue) Dequeue() (interface{}, error) {
 	return result, nil
 }
 
-func (q *ArrayQueue) Front() (interface{}, error) {
+func (q *ArrayQueue[T]) Front() (T, error) {
 	if (q.count == 0) {
-		return nil, errors.New("Front: the queue cannot be empty")
+		var result T
+		return result, errors.New("Front: the queue cannot be empty")
 	}
 	return q.items[q.front], nil
 }
 
-func (q ArrayQueue) ToString() string {
+func (q ArrayQueue[T]) ToString() string {
 	cur := q.items[q.front:len(q.items)]
 	cur = append(cur, q.items[0:q.front]...)
 	cur = cur[0:q.count]
